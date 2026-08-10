@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BMP F&B - Business Management Platform",
-  description: "Business management platform for Indonesian F&B SMEs",
+  title: "Resik - F&B Management Platform",
+  description: "Business management platform for Indonesian F&B businesses",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </QueryProvider>
       </body>
     </html>
   );

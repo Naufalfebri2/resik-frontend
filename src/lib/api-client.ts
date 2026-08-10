@@ -7,7 +7,11 @@ export class ApiError extends Error {
   status: number;
   errors?: Record<string, string[]>;
 
-  constructor(message: string, status: number, errors?: Record<string, string[]>) {
+  constructor(
+    message: string,
+    status: number,
+    errors?: Record<string, string[]>,
+  ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -19,13 +23,19 @@ type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: unknown;
   skipAuth?: boolean;
+  revalidate?: number | false;
 };
 
 export async function apiClient<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
-  const { method = "GET", body, skipAuth = false } = options;
+  const {
+    method = "GET",
+    body,
+    skipAuth = false,
+    revalidate = false,
+  } = options;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -41,11 +51,16 @@ export async function apiClient<T>(
     }
   }
 
+  const cacheConfig =
+    revalidate === false
+      ? { cache: "no-store" as const }
+      : { next: { revalidate } };
+
   const response = await fetch(`${API_URL}${endpoint}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
+    ...cacheConfig,
   });
 
   const contentType = response.headers.get("content-type");
@@ -56,7 +71,7 @@ export async function apiClient<T>(
     throw new ApiError(
       data?.message ?? "Something went wrong",
       response.status,
-      data?.errors
+      data?.errors,
     );
   }
 

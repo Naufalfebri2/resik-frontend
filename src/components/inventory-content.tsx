@@ -3,6 +3,7 @@ import { getIngredients, getLowStockIngredients } from "@/lib/ingredients";
 import { SectionTabs } from "@/components/section-tabs";
 import { IngredientTable } from "@/components/ingredient-table";
 import { CreateIngredientDialog } from "@/components/create-ingredient-dialog";
+import { CreateSectionDialog } from "@/components/create-section-dialog";
 
 export async function InventoryContent({
   outletId,
@@ -24,11 +25,14 @@ export async function InventoryContent({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <SectionTabs
-          sections={sections}
-          outletId={outletId}
-          selectedSectionId={activeSectionId}
-        />
+        <div className="flex items-center gap-3">
+          <SectionTabs
+            sections={sections}
+            outletId={outletId}
+            selectedSectionId={activeSectionId}
+          />
+          <CreateSectionDialog outletId={outletId} />
+        </div>
         {activeSectionId && (
           <CreateIngredientDialog sectionId={activeSectionId} />
         )}

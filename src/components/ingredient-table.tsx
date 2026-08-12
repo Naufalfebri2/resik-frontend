@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { IngredientRowActions } from "@/components/ingredient-row-actions";
 import type { Ingredient } from "@/types/inventory";
 
 const RISK_LABELS: Record<string, string> = {
@@ -38,6 +39,7 @@ export function IngredientTable({
           <TableHead>Risk Category</TableHead>
           <TableHead>Alert Threshold</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead className="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -59,6 +61,9 @@ export function IngredientTable({
                 ) : (
                   <Badge variant="secondary">OK</Badge>
                 )}
+              </TableCell>
+              <TableCell>
+                <IngredientRowActions ingredient={ingredient} />
               </TableCell>
             </TableRow>
           );

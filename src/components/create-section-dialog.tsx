@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useCreateSection } from "@/hooks/use-create-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ export function CreateSectionDialog({ outletId }: { outletId: string }) {
           setName("");
           router.push(`?outlet=${outletId}&section=${data.section.id}`);
           router.refresh();
+          toast.success("Section created successfully");
         },
       },
     );

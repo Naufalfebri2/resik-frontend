@@ -39,3 +39,33 @@ export interface LowStockIngredient extends Ingredient {
     actual_closing_stock: string | null;
   }[];
 }
+
+export interface DailyStock {
+  id: string;
+  ingredient_id: string;
+  date: string;
+  opening_stock: string;
+  expected_closing_stock: string;
+  actual_closing_stock: string | null;
+  variance: string | null;
+  stock_in: string;
+  adjustment_quantity: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type StockOutflowCategory = "production" | "waste" | "supplier_return";
+
+export interface StockOutflow {
+  id: string;
+  daily_stock_id: string;
+  category: StockOutflowCategory;
+  quantity: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IngredientDetail extends Ingredient {
+  section: Section & { outlet: Outlet };
+  daily_stocks: DailyStock[];
+}

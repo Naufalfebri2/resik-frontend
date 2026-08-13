@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -48,7 +49,14 @@ export function IngredientTable({
 
           return (
             <TableRow key={ingredient.id}>
-              <TableCell className="font-medium">{ingredient.name}</TableCell>
+              <TableCell className="font-medium">
+                <Link
+                  href={`/dashboard/inventory/${ingredient.id}`}
+                  className="hover:underline"
+                >
+                  {ingredient.name}
+                </Link>
+              </TableCell>
               <TableCell>{ingredient.unit}</TableCell>
               <TableCell>
                 {RISK_LABELS[ingredient.risk_category] ??

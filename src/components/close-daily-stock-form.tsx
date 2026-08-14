@@ -18,7 +18,12 @@ export function CloseDailyStockForm({
   unit: string;
 }) {
   const router = useRouter();
-  const [actualClosingStock, setActualClosingStock] = useState("");
+  const isClosed = dailyStock.actual_closing_stock !== null;
+  const [actualClosingStock, setActualClosingStock] = useState(
+    dailyStock.actual_closing_stock !== null
+      ? formatQuantity(dailyStock.actual_closing_stock)
+      : "",
+  );
 
   const closeDailyStock = useCloseDailyStock();
 
@@ -33,7 +38,11 @@ export function CloseDailyStockForm({
       {
         onSuccess: () => {
           router.refresh();
-          toast.success("Daily stock closed successfully");
+          toast.success(
+            isClosed
+              ? "Actual closing stock updated successfully"
+              : "Daily stock closed successfully",
+          );
         },
       },
     );
@@ -42,13 +51,24 @@ export function CloseDailyStockForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-4">
       <div>
-        <p className="text-sm font-medium">Close Daily Stock</p>
+        <p className="text-sm font-medium">
+          {isClosed ? "Actual Closing Stock" : "Close Daily Stock"}
+        </p>
         <p className="text-sm text-muted-foreground">
           Expected closing stock:{" "}
           {dailyStock.expected_closing_stock !== null
             ? `${formatQuantity(dailyStock.expected_closing_stock)} ${unit}`
             : "—"}
         </p>
+        {isClosed && dailyStock.variance !== null && (
+          <p className="text-sm text-muted-foreground">
+            Current variance:{" "}
+            <span className="font-medium text-foreground">
+              {Number(dailyStock.variance) > 0 ? "+" : ""}
+              {formatQuantity(dailyStock.variance)} {unit}
+            </span>
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -58,7 +78,7 @@ export function CloseDailyStockForm({
         <Input
           id="actual_closing_stock"
           type="number"
-          step="0.01"
+          step="1"
           min="0"
           value={actualClosingStock}
           onChange={(e) => setActualClosingStock(e.target.value)}
@@ -78,7 +98,11 @@ export function CloseDailyStockForm({
         disabled={closeDailyStock.isPending}
         className="w-full"
       >
-        {closeDailyStock.isPending ? "Closing..." : "Close Daily Stock"}
+        {closeDailyStock.isPending
+          ? "Saving..."
+          : isClosed
+            ? "Update Actual Closing Stock"
+            : "Close Daily Stock"}
       </Button>
     </form>
   );

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { IngredientRowActions } from "@/components/ingredient-row-actions";
+import { formatQuantity } from "@/lib/utils";
 import type { Ingredient } from "@/types/inventory";
 
 const RISK_LABELS: Record<string, string> = {
@@ -38,6 +39,7 @@ export function IngredientTable({
           <TableHead>Name</TableHead>
           <TableHead>Unit</TableHead>
           <TableHead>Risk Category</TableHead>
+          <TableHead>Current Stock</TableHead>
           <TableHead>Alert Threshold</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="w-12" />
@@ -62,7 +64,15 @@ export function IngredientTable({
                 {RISK_LABELS[ingredient.risk_category] ??
                   ingredient.risk_category}
               </TableCell>
-              <TableCell>{ingredient.alert_threshold}</TableCell>
+              <TableCell>
+                {ingredient.current_stock !== null &&
+                ingredient.current_stock !== undefined
+                  ? `${formatQuantity(ingredient.current_stock)} ${ingredient.unit}`
+                  : "—"}
+              </TableCell>
+              <TableCell>
+                {formatQuantity(ingredient.alert_threshold)}
+              </TableCell>
               <TableCell>
                 {isLowStock ? (
                   <Badge variant="destructive">Low Stock</Badge>

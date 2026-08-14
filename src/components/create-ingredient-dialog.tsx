@@ -53,7 +53,7 @@ export function CreateIngredientDialog({ sectionId }: { sectionId: string }) {
         name,
         unit,
         risk_category: riskCategory,
-        alert_threshold: Number(alertThreshold),
+        alert_threshold: alertThreshold ? Number(alertThreshold) : 0,
       },
       {
         onSuccess: () => {
@@ -122,15 +122,20 @@ export function CreateIngredientDialog({ sectionId }: { sectionId: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="alert_threshold">Alert Threshold</Label>
+              <Label htmlFor="alert_threshold">
+                Alert Threshold{" "}
+                <span className="font-normal text-muted-foreground">
+                  (optional, defaults to 0)
+                </span>
+              </Label>
               <Input
                 id="alert_threshold"
                 type="number"
-                step="0.01"
+                step="1"
                 min="0"
                 value={alertThreshold}
                 onChange={(e) => setAlertThreshold(e.target.value)}
-                required
+                placeholder="Leave empty for no alert"
               />
             </div>
 

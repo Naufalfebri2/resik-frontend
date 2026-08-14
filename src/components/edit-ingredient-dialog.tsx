@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { formatQuantity } from "@/lib/utils";
 import type { Ingredient, RiskCategory } from "@/types/inventory";
 
 export function EditIngredientDialog({
@@ -40,7 +41,7 @@ export function EditIngredientDialog({
     ingredient.risk_category,
   );
   const [alertThreshold, setAlertThreshold] = useState(
-    ingredient.alert_threshold,
+    formatQuantity(ingredient.alert_threshold),
   );
 
   const updateIngredient = useUpdateIngredient();
@@ -125,7 +126,7 @@ export function EditIngredientDialog({
               <Input
                 id="edit_alert_threshold"
                 type="number"
-                step="0.01"
+                step="1"
                 min="0"
                 value={alertThreshold}
                 onChange={(e) => setAlertThreshold(e.target.value)}

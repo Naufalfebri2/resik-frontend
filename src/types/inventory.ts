@@ -27,6 +27,7 @@ export interface Ingredient {
   custom_fields: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
+  current_stock?: number | null;
 }
 
 export interface LowStockIngredient extends Ingredient {
@@ -52,6 +53,7 @@ export interface DailyStock {
   adjustment_quantity: string;
   created_at: string;
   updated_at: string;
+  stock_outflows?: StockOutflow[];
 }
 
 export type StockOutflowCategory = "production" | "waste" | "supplier_return";

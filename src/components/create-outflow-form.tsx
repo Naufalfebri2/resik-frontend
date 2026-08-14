@@ -108,7 +108,7 @@ export function CreateOutflowForm({
         <Input
           id="quantity"
           type="number"
-          step="0.01"
+          step="1"
           min="0"
           max={availableStock}
           value={quantity}

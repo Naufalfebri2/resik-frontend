@@ -8,5 +8,5 @@ export function cn(...inputs: ClassValue[]) {
 export function formatQuantity(value: string | number): string {
   const num = Number(value);
   if (Number.isNaN(num)) return String(value);
-  return Number(num.toFixed(2)).toString();
+  return Math.round(num).toString();
 }

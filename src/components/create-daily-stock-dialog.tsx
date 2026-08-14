@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { formatQuantity } from "@/lib/utils";
 
 export function CreateDailyStockDialog({
   ingredientId,
@@ -33,7 +34,7 @@ export function CreateDailyStockDialog({
   const [date, setDate] = useState("");
   const [openingStock, setOpeningStock] = useState(
     recordingMode === "detail" && previousClosingStock !== null
-      ? previousClosingStock
+      ? formatQuantity(previousClosingStock)
       : "",
   );
 
@@ -43,7 +44,7 @@ export function CreateDailyStockDialog({
     setDate("");
     setOpeningStock(
       recordingMode === "detail" && previousClosingStock !== null
-        ? previousClosingStock
+        ? formatQuantity(previousClosingStock)
         : "",
     );
   }
@@ -88,7 +89,7 @@ export function CreateDailyStockDialog({
                 This outlet uses Detail mode. Opening stock must match the
                 previous closing stock:{" "}
                 <span className="font-medium text-foreground">
-                  {previousClosingStock} {unit}
+                  {formatQuantity(previousClosingStock)} {unit}
                 </span>
               </p>
             )}
@@ -109,7 +110,7 @@ export function CreateDailyStockDialog({
               <Input
                 id="opening_stock"
                 type="number"
-                step="0.01"
+                step="1"
                 min="0"
                 value={openingStock}
                 onChange={(e) => setOpeningStock(e.target.value)}

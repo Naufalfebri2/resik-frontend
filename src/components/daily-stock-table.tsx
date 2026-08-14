@@ -33,6 +33,9 @@ export function DailyStockTable({
           <TableRow>
             <TableHead>Date</TableHead>
             <TableHead>Opening</TableHead>
+            <TableHead>Production</TableHead>
+            <TableHead>Waste</TableHead>
+            <TableHead>Supplier Return</TableHead>
             <TableHead>Expected Closing</TableHead>
             <TableHead>Actual Closing</TableHead>
             <TableHead>Variance</TableHead>

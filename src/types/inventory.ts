@@ -71,3 +71,14 @@ export interface IngredientDetail extends Ingredient {
   section: Section & { outlet: Outlet };
   daily_stocks: DailyStock[];
 }
+
+export interface StockAdjustment {
+  id: string;
+  ingredient_id: string;
+  date: string;
+  adjustment_quantity: string;
+  reason: string;
+  adjusted_by: string;
+  created_at: string;
+  updated_at: string;
+}

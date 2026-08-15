@@ -82,3 +82,12 @@ export interface StockAdjustment {
   created_at: string;
   updated_at: string;
 }
+
+export interface Supplier {
+  id: string;
+  tenant_id: string;
+  name: string;
+  contact: string;
+  created_at: string;
+  updated_at: string;
+}

@@ -39,6 +39,7 @@ export function DailyStockRow({
   const isClosed = dailyStock.actual_closing_stock !== null;
   const variance =
     dailyStock.variance !== null ? Number(dailyStock.variance) : null;
+  const stockIn = Number(dailyStock.stock_in);
 
   const production = sumByCategory(dailyStock.stock_outflows, "production");
   const waste = sumByCategory(dailyStock.stock_outflows, "waste");
@@ -46,6 +47,7 @@ export function DailyStockRow({
     dailyStock.stock_outflows,
     "supplier_return",
   );
+  const totalOut = production + waste + supplierReturn;
 
   return (
     <>
@@ -53,6 +55,9 @@ export function DailyStockRow({
         <TableCell>{formatDate(dailyStock.date)}</TableCell>
         <TableCell>
           {formatQuantity(dailyStock.opening_stock)} {unit}
+        </TableCell>
+        <TableCell>
+          {stockIn > 0 ? `${formatQuantity(stockIn)} ${unit}` : "—"}
         </TableCell>
         <TableCell>
           {production > 0 ? `${formatQuantity(production)} ${unit}` : "—"}
@@ -64,6 +69,9 @@ export function DailyStockRow({
           {supplierReturn > 0
             ? `${formatQuantity(supplierReturn)} ${unit}`
             : "—"}
+        </TableCell>
+        <TableCell>
+          {totalOut > 0 ? `${formatQuantity(totalOut)} ${unit}` : "—"}
         </TableCell>
         <TableCell>
           {dailyStock.expected_closing_stock !== null

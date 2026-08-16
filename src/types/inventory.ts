@@ -91,3 +91,38 @@ export interface Supplier {
   created_at: string;
   updated_at: string;
 }
+
+export type PurchaseOrderStatus = "draft" | "ordered" | "received";
+
+export interface PurchaseOrderItem {
+  id: string;
+  purchase_order_id: string;
+  ingredient_id: string;
+  quantity: string;
+  unit_price: string;
+  ingredient: Ingredient;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  supplier_id: string;
+  outlet_id: string;
+  date: string;
+  status: PurchaseOrderStatus;
+  received_at: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  supplier: Supplier;
+  items: PurchaseOrderItem[];
+}
+
+export interface CashAccount {
+  id: string;
+  outlet_id: string;
+  name: string;
+  type: "cash" | "bank";
+  balance: number;
+  created_at: string;
+  updated_at: string;
+}

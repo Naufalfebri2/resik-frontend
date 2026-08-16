@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { getSections } from "@/lib/sections";
 import type {
   Ingredient,
   IngredientDetail,
@@ -17,4 +18,16 @@ export async function getIngredient(
   ingredientId: string,
 ): Promise<IngredientDetail> {
   return apiClient<IngredientDetail>(`/ingredients/${ingredientId}`);
+}
+
+export async function getIngredientsByOutlet(
+  outletId: string,
+): Promise<Ingredient[]> {
+  const sections = await getSections(outletId);
+
+  const ingredientsPerSection = await Promise.all(
+    sections.map((section) => getIngredients(section.id)),
+  );
+
+  return ingredientsPerSection.flat();
 }

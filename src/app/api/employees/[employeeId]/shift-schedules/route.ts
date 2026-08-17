@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApiError, apiClient } from "@/lib/api-client";
-import type { Shift } from "@/types/hr";
+import type { ShiftSchedule } from "@/types/hr";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ sectionId: string }> },
+  { params }: { params: Promise<{ employeeId: string }> },
 ) {
   try {
-    const { sectionId } = await params;
+    const { employeeId } = await params;
 
-    const data = await apiClient<Shift[]>(`/sections/${sectionId}/shifts`);
+    const data = await apiClient<ShiftSchedule[]>(
+      `/employees/${employeeId}/shift-schedules`,
+    );
 
     return NextResponse.json(data);
   } catch (error) {
@@ -29,16 +31,16 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ sectionId: string }> },
+  { params }: { params: Promise<{ employeeId: string }> },
 ) {
   try {
-    const { sectionId } = await params;
+    const { employeeId } = await params;
     const body = await request.json();
 
-    const data = await apiClient<{ message: string; shift: Shift }>(
-      `/sections/${sectionId}/shifts`,
-      { method: "POST", body },
-    );
+    const data = await apiClient<{
+      message: string;
+      shift_schedule: ShiftSchedule;
+    }>(`/employees/${employeeId}/shift-schedules`, { method: "POST", body });
 
     return NextResponse.json(data, { status: 201 });
   } catch (error) {

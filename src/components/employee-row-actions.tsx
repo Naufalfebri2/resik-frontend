@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditEmployeeDialog } from "@/components/edit-employee-dialog";
 import { DeleteEmployeeAlert } from "@/components/delete-employee-alert";
+import { ShiftScheduleSheet } from "@/components/shift-schedule-sheet";
 import type { CustomFieldDefinition, Employee } from "@/types/hr";
 
 export function EmployeeRowActions({
@@ -22,6 +23,7 @@ export function EmployeeRowActions({
 }) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
 
   return (
     <>
@@ -33,6 +35,9 @@ export function EmployeeRowActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setScheduleOpen(true)}>
+            View Schedule
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setEditOpen(true)}>
             Edit
           </DropdownMenuItem>
@@ -55,6 +60,11 @@ export function EmployeeRowActions({
         employee={employee}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
+      />
+      <ShiftScheduleSheet
+        employee={employee}
+        open={scheduleOpen}
+        onOpenChange={setScheduleOpen}
       />
     </>
   );

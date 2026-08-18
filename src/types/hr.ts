@@ -113,3 +113,38 @@ export interface CreateShiftSwapRequestPayload {
   requester_schedule_id: string;
   target_schedule_id: string;
 }
+
+export type AttendanceStatus =
+  | "on_time"
+  | "late"
+  | "sick_with_letter"
+  | "sick_without_letter"
+  | "leave"
+  | "time_off"
+  | "absent";
+
+export interface Attendance {
+  id: string;
+  employee_id: string;
+  shift_schedule_id: string | null;
+  date: string;
+  check_in_time: string | null;
+  check_out_time: string | null;
+  check_in_photo: string | null;
+  check_out_photo: string | null;
+  location_lat: string | null;
+  location_long: string | null;
+  late_minutes: number;
+  status: AttendanceStatus;
+  supporting_document: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MarkAttendanceStatusPayload {
+  date: string;
+  status: Extract<
+    AttendanceStatus,
+    "sick_with_letter" | "sick_without_letter" | "leave" | "time_off" | "absent"
+  >;
+}

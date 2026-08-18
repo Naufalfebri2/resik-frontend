@@ -8,6 +8,7 @@ const HR_TABS = [
   { label: "Employees", segment: "employees" },
   { label: "Shifts", segment: "shifts" },
   { label: "Swap Requests", segment: "swap-requests" },
+  { label: "Attendance", segment: "attendance" },
 ];
 
 export function HrSubNav() {

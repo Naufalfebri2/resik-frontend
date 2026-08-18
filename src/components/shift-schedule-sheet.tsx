@@ -58,6 +58,7 @@ export function ShiftScheduleSheet({
                   <ShiftScheduleItem
                     key={schedule.id}
                     employeeId={employee.id}
+                    sectionId={employee.section_id}
                     schedule={schedule}
                   />
                 ))}

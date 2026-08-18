@@ -2,6 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiError, apiClient } from "@/lib/api-client";
 import type { Employee } from "@/types/hr";
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ sectionId: string }> },
+) {
+  try {
+    const { sectionId } = await params;
+
+    const data = await apiClient<Employee[]>(
+      `/sections/${sectionId}/employees`,
+    );
+
+    return NextResponse.json(data);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { message: error.message, errors: error.errors },
+        { status: error.status },
+      );
+    }
+
+    return NextResponse.json(
+      { message: "An unexpected error occurred" },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ sectionId: string }> },

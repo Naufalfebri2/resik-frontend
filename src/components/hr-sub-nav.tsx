@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const HR_TABS = [
   { label: "Employees", segment: "employees" },
   { label: "Shifts", segment: "shifts" },
+  { label: "Swap Requests", segment: "swap-requests" },
 ];
 
 export function HrSubNav() {

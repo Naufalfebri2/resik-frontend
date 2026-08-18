@@ -74,7 +74,10 @@ export interface UpdateShiftPayload {
   end_time?: string;
 }
 
-export type ShiftScheduleSwapStatus = "none" | "pending" | "swapped";
+export type ShiftScheduleSwapStatus =
+  | "normal"
+  | "swap_pending"
+  | "swap_approved";
 
 export interface ShiftSchedule {
   id: string;
@@ -90,4 +93,23 @@ export interface ShiftSchedule {
 export interface CreateShiftSchedulePayload {
   shift_id: string;
   date: string;
+}
+
+export type ShiftSwapRequestStatus = "pending" | "approved" | "rejected";
+
+export interface ShiftSwapRequest {
+  id: string;
+  requester_schedule_id: string;
+  target_schedule_id: string;
+  status: ShiftSwapRequestStatus;
+  approved_by: string | null;
+  created_at: string;
+  updated_at: string;
+  requester_schedule?: ShiftSchedule & { employee?: Employee };
+  target_schedule?: ShiftSchedule & { employee?: Employee };
+}
+
+export interface CreateShiftSwapRequestPayload {
+  requester_schedule_id: string;
+  target_schedule_id: string;
 }

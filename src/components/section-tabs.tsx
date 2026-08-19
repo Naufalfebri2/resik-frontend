@@ -9,10 +9,12 @@ export function SectionTabs({
   sections,
   outletId,
   selectedSectionId,
+  showEmployeeCount = false,
 }: {
   sections: Section[];
   outletId: string;
   selectedSectionId: string | undefined;
+  showEmployeeCount?: boolean;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,6 +50,11 @@ export function SectionTabs({
             )}
           >
             {section.name}
+            {showEmployeeCount && section.employees_count !== undefined && (
+              <span className="ml-1 text-muted-foreground">
+                ({section.employees_count})
+              </span>
+            )}
           </Link>
         );
       })}

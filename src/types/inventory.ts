@@ -13,6 +13,7 @@ export interface Section {
   id: string;
   outlet_id: string;
   name: string;
+  employees_count?: number;
 }
 
 export type RiskCategory = "perishable" | "dry_goods";

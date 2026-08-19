@@ -30,6 +30,7 @@ export async function HrEmployeesContent({
             sections={sections}
             outletId={outletId}
             selectedSectionId={activeSectionId}
+            showEmployeeCount
           />
           <SectionActions
             section={sections.find((s) => s.id === activeSectionId)}

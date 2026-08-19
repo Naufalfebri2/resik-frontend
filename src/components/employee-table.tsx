@@ -23,6 +23,15 @@ function formatCurrency(value: string | number) {
   }).format(numeric);
 }
 
+function formatDate(value: string | null) {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 function formatCustomFieldValue(
   value: CustomFieldValue,
   fieldType: CustomFieldDefinition["field_type"],
@@ -63,10 +72,12 @@ export function EmployeeTable({
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-12">No.</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Role</TableHead>
           <TableHead>Start Date</TableHead>
+          <TableHead>Finish Date</TableHead>
           <TableHead>Base Salary</TableHead>
           {customFieldDefinitions.map((definition) => (
             <TableHead key={definition.id}>{definition.field_name}</TableHead>
@@ -76,18 +87,14 @@ export function EmployeeTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {employees.map((employee) => (
+        {employees.map((employee, index) => (
           <TableRow key={employee.id}>
+            <TableCell className="text-muted-foreground">{index + 1}</TableCell>
             <TableCell className="font-medium">{employee.name}</TableCell>
             <TableCell>{employee.phone}</TableCell>
             <TableCell>{employee.role}</TableCell>
-            <TableCell>
-              {new Date(employee.start_date).toLocaleDateString("id-ID", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </TableCell>
+            <TableCell>{formatDate(employee.start_date)}</TableCell>
+            <TableCell>{formatDate(employee.finish_date)}</TableCell>
             <TableCell>{formatCurrency(employee.base_salary)}</TableCell>
             {customFieldDefinitions.map((definition) => (
               <TableCell key={definition.id}>

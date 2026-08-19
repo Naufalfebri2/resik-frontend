@@ -23,6 +23,7 @@ export interface Employee {
   phone: string;
   role: string;
   start_date: string;
+  finish_date: string | null;
   base_salary: string;
   remaining_leave_quota: number;
   is_active: boolean;

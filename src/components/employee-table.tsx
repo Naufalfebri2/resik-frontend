@@ -12,14 +12,7 @@ import type {
   CustomFieldDefinition,
   CustomFieldValue,
   Employee,
-  EmployeeRole,
 } from "@/types/hr";
-
-const ROLE_LABELS: Record<EmployeeRole, string> = {
-  staff: "Staff",
-  admin: "Admin",
-  owner: "Owner",
-};
 
 function formatCurrency(value: string | number) {
   const numeric = typeof value === "string" ? Number(value) : value;
@@ -87,7 +80,7 @@ export function EmployeeTable({
           <TableRow key={employee.id}>
             <TableCell className="font-medium">{employee.name}</TableCell>
             <TableCell>{employee.phone}</TableCell>
-            <TableCell>{ROLE_LABELS[employee.role]}</TableCell>
+            <TableCell>{employee.role}</TableCell>
             <TableCell>
               {new Date(employee.start_date).toLocaleDateString("id-ID", {
                 day: "2-digit",

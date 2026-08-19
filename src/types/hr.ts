@@ -1,7 +1,5 @@
 import type { Section } from "@/types/inventory";
 
-export type EmployeeRole = "staff" | "admin" | "owner";
-
 export type CustomFieldType = "text" | "number" | "date" | "boolean" | "select";
 
 export interface CustomFieldDefinition {
@@ -23,7 +21,7 @@ export interface Employee {
   section_id: string;
   name: string;
   phone: string;
-  role: EmployeeRole;
+  role: string;
   start_date: string;
   base_salary: string;
   remaining_leave_quota: number;
@@ -37,7 +35,7 @@ export interface Employee {
 export interface CreateEmployeePayload {
   name: string;
   phone: string;
-  role: EmployeeRole;
+  role: string;
   start_date: string;
   base_salary: number;
   custom_fields?: Record<string, CustomFieldValue>;
@@ -46,7 +44,7 @@ export interface CreateEmployeePayload {
 export interface UpdateEmployeePayload {
   name?: string;
   phone?: string;
-  role?: EmployeeRole;
+  role?: string;
   base_salary?: number;
   is_active?: boolean;
   custom_fields?: Record<string, CustomFieldValue>;

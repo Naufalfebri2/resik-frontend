@@ -1,14 +1,14 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import type { CustomFieldValue, Employee, EmployeeRole } from "@/types/hr";
+import type { CustomFieldValue, Employee } from "@/types/hr";
 
 interface UpdateEmployeePayload {
   sectionId: string;
   employeeId: string;
   name: string;
   phone: string;
-  role: EmployeeRole;
+  role: string;
   base_salary: number;
   is_active: boolean;
   custom_fields: Record<string, CustomFieldValue>;

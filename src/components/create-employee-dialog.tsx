@@ -16,32 +16,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CustomFieldInput } from "@/components/custom-field-input";
-import type {
-  CustomFieldDefinition,
-  CustomFieldValue,
-  EmployeeRole,
-} from "@/types/hr";
+import { ROLE_SUGGESTIONS } from "@/lib/role-suggestions";
+import type { CustomFieldDefinition, CustomFieldValue } from "@/types/hr";
+
+function capitalizeFirstLetter(value: string) {
+  if (value.length === 0) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
 export function CreateEmployeeDialog({
   sectionId,
   customFieldDefinitions,
+  existingRole,
 }: {
   sectionId: string;
   customFieldDefinitions: CustomFieldDefinition[];
+  existingRole?: string;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<EmployeeRole | "">("");
+  const [role, setRole] = useState("");
   const [startDate, setStartDate] = useState("");
   const [baseSalary, setBaseSalary] = useState("");
   const [customFields, setCustomFields] = useState<
@@ -127,20 +124,27 @@ export function CreateEmployeeDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select
+              <Label htmlFor="role">Role / Position</Label>
+              <Input
+                id="role"
+                list="role-suggestions"
                 value={role}
-                onValueChange={(value) => setRole(value as EmployeeRole)}
-              >
-                <SelectTrigger id="role">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="staff">Staff</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="owner">Owner</SelectItem>
-                </SelectContent>
-              </Select>
+                onChange={(e) => setRole(capitalizeFirstLetter(e.target.value))}
+                placeholder="e.g. Barista, Head Bartender, Sous Chef"
+                required
+              />
+              <datalist id="role-suggestions">
+                {ROLE_SUGGESTIONS.map((suggestion) => (
+                  <option key={suggestion} value={suggestion} />
+                ))}
+              </datalist>
+              {existingRole && (
+                <p className="text-xs text-muted-foreground">
+                  This section currently uses the role &quot;{existingRole}
+                  &quot;. All employees in this section must share the same
+                  role.
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">

@@ -23,12 +23,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CustomFieldInput } from "@/components/custom-field-input";
+import { ROLE_SUGGESTIONS } from "@/lib/role-suggestions";
 import type {
   CustomFieldDefinition,
   CustomFieldValue,
   Employee,
-  EmployeeRole,
 } from "@/types/hr";
+
+function capitalizeFirstLetter(value: string) {
+  if (value.length === 0) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
 export function EditEmployeeDialog({
   employee,
@@ -44,7 +49,7 @@ export function EditEmployeeDialog({
   const router = useRouter();
   const [name, setName] = useState(employee.name);
   const [phone, setPhone] = useState(employee.phone);
-  const [role, setRole] = useState<EmployeeRole>(employee.role);
+  const [role, setRole] = useState(employee.role);
   const [baseSalary, setBaseSalary] = useState(String(employee.base_salary));
   const [isActive, setIsActive] = useState(employee.is_active);
   const [customFields, setCustomFields] = useState<
@@ -112,20 +117,20 @@ export function EditEmployeeDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="edit_role">Role</Label>
-              <Select
+              <Label htmlFor="edit_role">Role / Position</Label>
+              <Input
+                id="edit_role"
+                list="edit-role-suggestions"
                 value={role}
-                onValueChange={(value) => setRole(value as EmployeeRole)}
-              >
-                <SelectTrigger id="edit_role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="staff">Staff</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="owner">Owner</SelectItem>
-                </SelectContent>
-              </Select>
+                onChange={(e) => setRole(capitalizeFirstLetter(e.target.value))}
+                placeholder="e.g. Barista, Head Bartender, Sous Chef"
+                required
+              />
+              <datalist id="edit-role-suggestions">
+                {ROLE_SUGGESTIONS.map((suggestion) => (
+                  <option key={suggestion} value={suggestion} />
+                ))}
+              </datalist>
             </div>
 
             <div className="space-y-2">

@@ -1,0 +1,37 @@
+export const ROLE_SUGGESTIONS = [
+  // Kitchen / FBP
+  "Executive Chef",
+  "Head Chef",
+  "Chef de Cuisine",
+  "Sous Chef",
+  "Chef de Partie",
+  "Demi Chef",
+  "Commis Chef",
+  "Line Cook",
+  "Prep Cook",
+  "Pastry Chef",
+  "Baker",
+  "Butcher",
+  "Kitchen Helper",
+  "Dishwasher",
+  // Management / FBS
+  "F&B Manager",
+  "Restaurant Manager",
+  "Assistant Restaurant Manager",
+  "F&B Supervisor",
+  // Operational Service
+  "Captain",
+  "Waiter",
+  "Waitress",
+  "Food Runner",
+  "Busser",
+  "Host",
+  "Hostess",
+  "Cashier",
+  // Bar Service
+  "Head Bartender",
+  "Bar Supervisor",
+  "Bartender",
+  "Barista",
+  "Barback",
+];

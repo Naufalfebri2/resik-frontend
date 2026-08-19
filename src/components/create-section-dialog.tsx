@@ -35,7 +35,6 @@ export function CreateSectionDialog({ outletId }: { outletId: string }) {
           setOpen(false);
           setName("");
           router.push(`?outlet=${outletId}&section=${data.section.id}`);
-          router.refresh();
           toast.success("Section created successfully");
         },
       },

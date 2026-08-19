@@ -4,6 +4,8 @@ import { getCustomFieldDefinitions } from "@/lib/custom-field-definitions";
 import { SectionTabs } from "@/components/section-tabs";
 import { EmployeeTable } from "@/components/employee-table";
 import { CreateEmployeeDialog } from "@/components/create-employee-dialog";
+import { CreateSectionDialog } from "@/components/create-section-dialog";
+import { SectionActions } from "@/components/section-actions";
 
 export async function HrEmployeesContent({
   outletId,
@@ -23,15 +25,23 @@ export async function HrEmployeesContent({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <SectionTabs
-          sections={sections}
-          outletId={outletId}
-          selectedSectionId={activeSectionId}
-        />
+        <div className="flex items-center gap-3">
+          <SectionTabs
+            sections={sections}
+            outletId={outletId}
+            selectedSectionId={activeSectionId}
+          />
+          <SectionActions
+            section={sections.find((s) => s.id === activeSectionId)}
+            outletId={outletId}
+          />
+          <CreateSectionDialog outletId={outletId} />
+        </div>
         {activeSectionId && (
           <CreateEmployeeDialog
             sectionId={activeSectionId}
             customFieldDefinitions={customFieldDefinitions}
+            existingRole={employees[0]?.role}
           />
         )}
       </div>

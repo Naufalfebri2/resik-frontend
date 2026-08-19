@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { ApiError, apiClient } from "@/lib/api-client";
 import type { Section } from "@/types/inventory";
 
@@ -14,6 +15,11 @@ export async function POST(
       `/outlets/${outletId}/sections`,
       { method: "POST", body },
     );
+
+    revalidatePath("/dashboard/inventory");
+    revalidatePath("/dashboard/hr/employees");
+    revalidatePath("/dashboard/hr/shifts");
+    revalidatePath("/dashboard/hr/attendance");
 
     return NextResponse.json(data, { status: 201 });
   } catch (error) {

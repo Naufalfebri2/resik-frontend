@@ -1,6 +1,7 @@
 import { getSections } from "@/lib/sections";
 import { getEmployees } from "@/lib/employees";
 import { SectionTabs } from "@/components/section-tabs";
+import { SectionActions } from "@/components/section-actions";
 import { EmployeeSwitcher } from "@/components/employee-switcher";
 import { EmployeeAttendancePanel } from "@/components/employee-attendance-panel";
 
@@ -24,11 +25,17 @@ export async function HrAttendanceContent({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <SectionTabs
-          sections={sections}
-          outletId={outletId}
-          selectedSectionId={activeSectionId}
-        />
+        <div className="flex items-center gap-3">
+          <SectionTabs
+            sections={sections}
+            outletId={outletId}
+            selectedSectionId={activeSectionId}
+          />
+          <SectionActions
+            section={sections.find((s) => s.id === activeSectionId)}
+            outletId={outletId}
+          />
+        </div>
         <EmployeeSwitcher
           employees={employees}
           selectedEmployeeId={activeEmployee?.id}

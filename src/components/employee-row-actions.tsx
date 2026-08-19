@@ -12,6 +12,7 @@ import {
 import { EditEmployeeDialog } from "@/components/edit-employee-dialog";
 import { DeleteEmployeeAlert } from "@/components/delete-employee-alert";
 import { ShiftScheduleSheet } from "@/components/shift-schedule-sheet";
+import { MoveEmployeeDialog } from "@/components/move-employee-dialog";
 import type { CustomFieldDefinition, Employee } from "@/types/hr";
 
 export function EmployeeRowActions({
@@ -24,6 +25,7 @@ export function EmployeeRowActions({
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
 
   return (
     <>
@@ -40,6 +42,9 @@ export function EmployeeRowActions({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setEditOpen(true)}>
             Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setMoveOpen(true)}>
+            Move to Section...
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setDeleteOpen(true)}
@@ -65,6 +70,11 @@ export function EmployeeRowActions({
         employee={employee}
         open={scheduleOpen}
         onOpenChange={setScheduleOpen}
+      />
+      <MoveEmployeeDialog
+        employee={employee}
+        open={moveOpen}
+        onOpenChange={setMoveOpen}
       />
     </>
   );

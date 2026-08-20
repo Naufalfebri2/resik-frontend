@@ -8,6 +8,7 @@ import {
   Wallet,
   Truck,
   ClipboardList,
+  Banknote,
 } from "lucide-react";
 
 export interface NavItem {
@@ -26,6 +27,7 @@ export const navItems: NavItem[] = [
     icon: ClipboardList,
   },
   { title: "HR", url: "/dashboard/hr", icon: Users },
+  { title: "Payroll", url: "/dashboard/payroll", icon: Banknote },
   { title: "Orders (POS)", url: "/dashboard/orders", icon: ShoppingCart },
   { title: "Bookings", url: "/dashboard/bookings", icon: CalendarClock },
   { title: "Finance", url: "/dashboard/finance", icon: Wallet },

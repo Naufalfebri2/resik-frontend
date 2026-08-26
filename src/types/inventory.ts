@@ -9,6 +9,15 @@ export interface Outlet {
   online_pickup_enabled: boolean;
 }
 
+export interface UpdateOutletPayload {
+  name?: string;
+  recording_mode?: "simple" | "detail";
+  latitude?: number | null;
+  longitude?: number | null;
+  qr_ordering_enabled?: boolean;
+  online_pickup_enabled?: boolean;
+}
+
 export interface Section {
   id: string;
   outlet_id: string;

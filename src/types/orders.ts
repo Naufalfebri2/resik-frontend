@@ -30,6 +30,14 @@ export interface Table {
   updated_at: string;
 }
 
+export interface CreateTablePayload {
+  table_number: string;
+}
+
+export interface UpdateTablePayload {
+  table_number: string;
+}
+
 export interface Menu {
   id: string;
   outlet_id: string;

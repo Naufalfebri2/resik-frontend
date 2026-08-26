@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { History } from "lucide-react";
 import { getOutlets } from "@/lib/outlets";
+import { getOrders } from "@/lib/orders";
 import { OutletSwitcher } from "@/components/outlet-switcher";
 import { OrdersContent } from "@/components/orders-content";
+import { OrdersViewTabs } from "@/components/orders-view-tabs";
+import { UnacknowledgedOrdersList } from "@/components/unacknowledged-orders-list";
 import { Button } from "@/components/ui/button";
 
 interface OrdersPageProps {
-  searchParams: Promise<{ outlet?: string; section?: string }>;
+  searchParams: Promise<{
+    outlet?: string;
+    section?: string;
+    tab?: string;
+  }>;
 }
 
 export default async function OrdersPage({ searchParams }: OrdersPageProps) {
@@ -21,6 +28,13 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
       </p>
     );
   }
+
+  const activeTab = params.tab === "unacknowledged" ? "unacknowledged" : "tables";
+
+  const unacknowledgedOrders =
+    activeTab === "unacknowledged"
+      ? await getOrders(selectedOutletId, { unacknowledgedOnly: true })
+      : [];
 
   return (
     <div className="space-y-6">
@@ -40,17 +54,26 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
               History
             </Link>
           </Button>
-          <OutletSwitcher
-            outlets={outlets}
-            selectedOutletId={selectedOutletId}
-          />
+          <OutletSwitcher outlets={outlets} selectedOutletId={selectedOutletId} />
         </div>
       </div>
 
-      <OrdersContent
+      <OrdersViewTabs
         outletId={selectedOutletId}
-        selectedSectionId={params.section}
+        unacknowledgedCount={unacknowledgedOrders.length}
       />
+
+      {activeTab === "tables" ? (
+        <OrdersContent
+          outletId={selectedOutletId}
+          selectedSectionId={params.section}
+        />
+      ) : (
+        <UnacknowledgedOrdersList
+          outletId={selectedOutletId}
+          orders={unacknowledgedOrders}
+        />
+      )}
     </div>
   );
 }

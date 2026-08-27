@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,9 +25,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { useAssignSplitLabel } from "@/hooks/use-assign-split-label";
 import { useRefundItem } from "@/hooks/use-refund-item";
+import { useUpdatePrepStatus } from "@/hooks/use-update-prep-status";
 import type { OrderItem } from "@/types/orders";
 
 function formatCurrency(value: string | number) {
@@ -82,6 +83,75 @@ function SplitLabelCell({
       className="h-8 w-20"
       disabled={assignSplitLabel.isPending}
     />
+  );
+}
+
+const PREP_STATUS_LABELS: Record<OrderItem["prep_status"], string> = {
+  pending: "Pending",
+  preparing: "Preparing",
+  prepared: "Prepared",
+};
+
+const PREP_STATUS_NEXT: Record<
+  OrderItem["prep_status"],
+  { target: "preparing" | "prepared"; label: string } | null
+> = {
+  pending: { target: "preparing", label: "Start Preparing" },
+  preparing: { target: "prepared", label: "Mark Prepared" },
+  prepared: null,
+};
+
+function PrepStatusCell({
+  item,
+  outletId,
+  orderId,
+}: {
+  item: OrderItem;
+  outletId: string;
+  orderId: string;
+}) {
+  const router = useRouter();
+  const updatePrepStatus = useUpdatePrepStatus();
+
+  if (item.refund_status === "refunded") {
+    return <span className="text-xs text-muted-foreground">-</span>;
+  }
+
+  const next = PREP_STATUS_NEXT[item.prep_status];
+
+  function handleClick() {
+    if (!next) return;
+
+    updatePrepStatus.mutate(
+      { outletId, orderId, orderItemId: item.id, prepStatus: next.target },
+      {
+        onSuccess: () => {
+          toast.success(`Item marked as ${next.target}`);
+          router.refresh();
+        },
+        onError: (error) => toast.error(error.message),
+      },
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Badge
+        variant={item.prep_status === "prepared" ? "default" : "secondary"}
+      >
+        {PREP_STATUS_LABELS[item.prep_status]}
+      </Badge>
+      {next && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleClick}
+          disabled={updatePrepStatus.isPending}
+        >
+          {updatePrepStatus.isPending ? "..." : next.label}
+        </Button>
+      )}
+    </div>
   );
 }
 
@@ -167,6 +237,7 @@ export function OrderItemsTable({
           <TableHead>Qty</TableHead>
           <TableHead>Price</TableHead>
           <TableHead>Split Label</TableHead>
+          <TableHead>Prep Status</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="w-24" />
         </TableRow>
@@ -181,6 +252,13 @@ export function OrderItemsTable({
             </TableCell>
             <TableCell>
               <SplitLabelCell
+                item={item}
+                outletId={outletId}
+                orderId={orderId}
+              />
+            </TableCell>
+            <TableCell>
+              <PrepStatusCell
                 item={item}
                 outletId={outletId}
                 orderId={orderId}

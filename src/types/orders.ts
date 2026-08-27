@@ -75,12 +75,22 @@ export interface Payment {
   updated_at: string;
 }
 
+export type SourcePlatform =
+  | "grab"
+  | "gojek"
+  | "shopeefood"
+  | "direct_call"
+  | "other";
+
+export type CourierStatus = "pending" | "prepared" | "picked_up_by_courier";
+
 export interface Order {
   id: string;
   outlet_id: string;
   table_id: string | null;
   order_number: string;
   customer_name: string | null;
+  customer_phone: string | null;
   order_type: OrderType;
   status: OrderStatus;
   subtotal: string | null;
@@ -89,6 +99,11 @@ export interface Order {
   opened_by: string | null;
   acknowledged_at: string | null;
   acknowledged_by: string | null;
+  requested_pickup_time: string | null;
+  source_platform: SourcePlatform | null;
+  platform_order_id: string | null;
+  courier_status: CourierStatus | null;
+  courier_picked_up_at: string | null;
   created_at: string;
   updated_at: string;
   table?: Table;
@@ -215,4 +230,16 @@ export interface OutletStaffMember {
   name: string;
   email: string;
   role: string;
+}
+
+// ---- Online Delivery ----
+
+export interface CreateDeliveryOrderPayload {
+  source_platform: SourcePlatform;
+  platform_order_id?: string;
+  items: CreateOrderItemPayload[];
+}
+
+export interface UpdateCourierStatusPayload {
+  courier_status: Extract<CourierStatus, "prepared" | "picked_up_by_courier">;
 }

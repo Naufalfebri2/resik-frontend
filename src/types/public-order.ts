@@ -59,3 +59,36 @@ export interface PublicOrderStatusResponse {
   items: PublicOrderStatusItem[];
   total: number;
 }
+
+// ---- Online Pickup ----
+
+export interface PublicPickupMenuResponse {
+  outlet: {
+    id: string;
+    name: string;
+  };
+  menus: PublicMenuItem[];
+}
+
+export interface SubmitPickupOrderPayload {
+  customer_name: string;
+  customer_phone: string;
+  requested_pickup_time?: string;
+  items: PublicOrderCartItem[];
+}
+
+export interface SubmitPickupOrderResponse {
+  message: string;
+  order_id: string;
+  order: {
+    id: string;
+    order_number: string;
+    items: {
+      id: string;
+      menu_id: string;
+      quantity: number;
+      unit_price: string;
+      menu?: PublicMenuItem;
+    }[];
+  };
+}

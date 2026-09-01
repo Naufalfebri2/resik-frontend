@@ -48,7 +48,27 @@ export interface CreateBookingPayload {
   notes?: string;
 }
 
+export interface UpdateBookingPayload {
+  table_id: string;
+  customer_name: string;
+  phone: string;
+  guest_count: number;
+  booking_datetime: string;
+  duration_minutes?: number;
+  notes?: string;
+}
+
 export interface CreateEventBookingPayload {
+  table_ids: string[];
+  customer_name: string;
+  phone: string;
+  guest_count: number;
+  booking_datetime: string;
+  duration_minutes?: number;
+  notes?: string;
+}
+
+export interface UpdateEventBookingPayload {
   table_ids: string[];
   customer_name: string;
   phone: string;
@@ -70,4 +90,17 @@ export interface AvailabilityQuery {
   datetime: string;
   duration_minutes?: number;
   exclude_booking_id?: string;
+}
+
+// ---- History ----
+
+export type BookingHistoryStatus = "seated" | "cancelled" | "no_show";
+
+export interface BookingHistoryFilters {
+  status?: BookingHistoryStatus;
+  is_event?: boolean;
+  date_from?: string;
+  date_to?: string;
+  page?: number;
+  per_page?: number;
 }

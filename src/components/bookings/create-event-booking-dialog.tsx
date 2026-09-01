@@ -19,14 +19,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateEventBooking } from "@/hooks/use-create-event-booking";
 import { AvailabilityPicker } from "@/components/bookings/availability-picker";
-
-function nowForDatetimeLocal(): string {
-  const now = new Date();
-  now.setSeconds(0, 0);
-  const offset = now.getTimezoneOffset();
-  const local = new Date(now.getTime() - offset * 60000);
-  return local.toISOString().slice(0, 16);
-}
+import {
+  todayDateString,
+  nowTimeString,
+  combineDateAndTime,
+} from "@/lib/booking-format";
 
 export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
   const router = useRouter();
@@ -36,7 +33,8 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [guestCount, setGuestCount] = useState("1");
-  const [datetime, setDatetime] = useState(nowForDatetimeLocal());
+  const [date, setDate] = useState(todayDateString());
+  const [time, setTime] = useState(nowTimeString());
   const [durationMinutes, setDurationMinutes] = useState("120");
   const [notes, setNotes] = useState("");
   const [selectedTableIds, setSelectedTableIds] = useState<string[]>([]);
@@ -45,7 +43,8 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
     setCustomerName("");
     setPhone("");
     setGuestCount("1");
-    setDatetime(nowForDatetimeLocal());
+    setDate(todayDateString());
+    setTime(nowTimeString());
     setDurationMinutes("120");
     setNotes("");
     setSelectedTableIds([]);
@@ -60,7 +59,11 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
     customerName.trim() !== "" &&
     phone.trim() !== "" &&
     Number(guestCount) >= 1 &&
+    date !== "" &&
+    time !== "" &&
     selectedTableIds.length >= 1;
+
+  const datetime = date && time ? combineDateAndTime(date, time) : "";
 
   function handleSubmit() {
     if (!isValid) return;
@@ -73,7 +76,7 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
           customer_name: customerName,
           phone,
           guest_count: Number(guestCount),
-          booking_datetime: new Date(datetime).toISOString(),
+          booking_datetime: datetime,
           duration_minutes: Number(durationMinutes),
           notes: notes.trim() || undefined,
         },
@@ -95,7 +98,7 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
           <CalendarPlus className="size-4" /> New Event
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>New Event Booking</DialogTitle>
           <DialogDescription>
@@ -137,16 +140,26 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="event_datetime">Date & Time</Label>
+            <Label htmlFor="event_date">Date</Label>
             <Input
-              id="event_datetime"
-              type="datetime-local"
-              value={datetime}
-              onChange={(e) => setDatetime(e.target.value)}
+              id="event_date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="event_time">Time</Label>
+            <Input
+              id="event_time"
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+
+          <div className="col-span-2 space-y-2">
             <Label htmlFor="event_duration">Duration (minutes)</Label>
             <Input
               id="event_duration"
@@ -171,7 +184,7 @@ export function CreateEventBookingDialog({ outletId }: { outletId: string }) {
 
         <AvailabilityPicker
           outletId={outletId}
-          datetime={new Date(datetime).toISOString()}
+          datetime={datetime}
           durationMinutes={Number(durationMinutes) || 120}
           selectionMode="multiple"
           selected={selectedTableIds}

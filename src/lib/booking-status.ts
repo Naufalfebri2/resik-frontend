@@ -30,8 +30,24 @@ const CANCELLABLE_STATUSES: BookingStatus[] = [
   "confirmed",
 ];
 
+const EDITABLE_STATUSES: BookingStatus[] = [
+  "pending",
+  "awaiting_deposit",
+  "confirmed",
+];
+
+const LOCKED_FOR_DELETE_STATUSES: BookingStatus[] = ["seated"];
+
 export function canCancelOrNoShow(status: BookingStatus): boolean {
   return CANCELLABLE_STATUSES.includes(status);
+}
+
+export function canEditBooking(status: BookingStatus): boolean {
+  return EDITABLE_STATUSES.includes(status);
+}
+
+export function canDeleteBooking(status: BookingStatus): boolean {
+  return !LOCKED_FOR_DELETE_STATUSES.includes(status);
 }
 
 export const STATUS_LABEL: Record<BookingStatus, string> = {

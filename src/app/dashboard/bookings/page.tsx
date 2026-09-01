@@ -1,5 +1,8 @@
+import Link from "next/link";
+import { History } from "lucide-react";
 import { getOutlets } from "@/lib/outlets";
 import { getBookings } from "@/lib/bookings";
+import { Button } from "@/components/ui/button";
 import { OutletSwitcher } from "@/components/outlet-switcher";
 import { BookingsViewToggle } from "@/components/bookings/bookings-view-toggle";
 import { BookingsList } from "@/components/bookings/bookings-list";
@@ -61,6 +64,13 @@ export default async function BookingsPage({
       <div className="flex items-center justify-between">
         <BookingsViewToggle outletId={selectedOutletId} currentView={view} />
         <div className="flex gap-2">
+          <Button asChild size="sm" variant="ghost">
+            <Link
+              href={`/dashboard/bookings/history?outlet=${selectedOutletId}`}
+            >
+              <History className="size-4" /> History
+            </Link>
+          </Button>
           <CreateBookingDialog outletId={selectedOutletId} />
           <CreateEventBookingDialog outletId={selectedOutletId} />
         </div>

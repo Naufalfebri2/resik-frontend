@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,49 +10,58 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateBooking } from "@/hooks/use-create-booking";
+import { useUpdateEventBooking } from "@/hooks/use-update-event-booking";
 import { AvailabilityPicker } from "@/components/bookings/availability-picker";
-import {
-  todayDateString,
-  nowTimeString,
-  combineDateAndTime,
-} from "@/lib/booking-format";
+import { combineDateAndTime } from "@/lib/booking-format";
+import type { TableBooking } from "@/types/booking";
 
-export function CreateBookingDialog({ outletId }: { outletId: string }) {
+function toDateInputValue(isoString: string): string {
+  const d = new Date(isoString);
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
+function toTimeInputValue(isoString: string): string {
+  const d = new Date(isoString);
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().slice(11, 16);
+}
+
+export function EditEventBookingDialog({
+  booking,
+  outletId,
+  open,
+  onOpenChange,
+}: {
+  booking: TableBooking;
+  outletId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const router = useRouter();
-  const createBooking = useCreateBooking();
+  const updateEventBooking = useUpdateEventBooking();
 
-  const [open, setOpen] = useState(false);
-  const [customerName, setCustomerName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [guestCount, setGuestCount] = useState("1");
-  const [date, setDate] = useState(todayDateString());
-  const [time, setTime] = useState(nowTimeString());
-  const [durationMinutes, setDurationMinutes] = useState("120");
-  const [notes, setNotes] = useState("");
-  const [selectedTableIds, setSelectedTableIds] = useState<string[]>([]);
-
-  function resetForm() {
-    setCustomerName("");
-    setPhone("");
-    setGuestCount("1");
-    setDate(todayDateString());
-    setTime(nowTimeString());
-    setDurationMinutes("120");
-    setNotes("");
-    setSelectedTableIds([]);
-  }
-
-  function handleOpenChange(newOpen: boolean) {
-    if (newOpen) resetForm();
-    setOpen(newOpen);
-  }
+  const [customerName, setCustomerName] = useState(booking.customer_name);
+  const [phone, setPhone] = useState(booking.phone);
+  const [guestCount, setGuestCount] = useState(String(booking.guest_count));
+  const [date, setDate] = useState(toDateInputValue(booking.booking_datetime));
+  const [time, setTime] = useState(toTimeInputValue(booking.booking_datetime));
+  const [durationMinutes, setDurationMinutes] = useState(
+    String(booking.duration_minutes),
+  );
+  const [notes, setNotes] = useState(booking.notes ?? "");
+  const [selectedTableIds, setSelectedTableIds] = useState<string[]>(
+    booking.table_assignments
+      ?.map((assignment) => assignment.table_id)
+      .filter(Boolean) ?? [],
+  );
 
   const isValid =
     customerName.trim() !== "" &&
@@ -61,18 +69,19 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
     Number(guestCount) >= 1 &&
     date !== "" &&
     time !== "" &&
-    selectedTableIds.length === 1;
+    selectedTableIds.length >= 1;
 
   const datetime = date && time ? combineDateAndTime(date, time) : "";
 
   function handleSubmit() {
     if (!isValid) return;
 
-    createBooking.mutate(
+    updateEventBooking.mutate(
       {
         outletId,
+        bookingId: booking.id,
         data: {
-          table_id: selectedTableIds[0],
+          table_ids: selectedTableIds,
           customer_name: customerName,
           phone,
           guest_count: Number(guestCount),
@@ -83,8 +92,8 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
       },
       {
         onSuccess: () => {
-          toast.success("Booking created successfully");
-          setOpen(false);
+          toast.success("Event booking updated successfully");
+          onOpenChange(false);
           router.refresh();
         },
       },
@@ -92,45 +101,38 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="size-4" /> New Booking
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>New Booking</DialogTitle>
+          <DialogTitle>Edit Event Booking</DialogTitle>
           <DialogDescription>
-            Create a table reservation for a customer.
+            Update the event reservation details for {booking.customer_name}.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 space-y-2">
-            <Label htmlFor="customer_name">Customer Name</Label>
+            <Label htmlFor="edit_event_customer_name">Customer Name</Label>
             <Input
-              id="customer_name"
+              id="edit_event_customer_name"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              placeholder="e.g. Andi Wijaya"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="edit_event_phone">Phone</Label>
             <Input
-              id="phone"
+              id="edit_event_phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="081234567890"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="guest_count">Guests</Label>
+            <Label htmlFor="edit_event_guest_count">Guests</Label>
             <Input
-              id="guest_count"
+              id="edit_event_guest_count"
               type="number"
               min={1}
               step={1}
@@ -140,9 +142,9 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="edit_event_date">Date</Label>
             <Input
-              id="date"
+              id="edit_event_date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -150,9 +152,9 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="time">Time</Label>
+            <Label htmlFor="edit_event_time">Time</Label>
             <Input
-              id="time"
+              id="edit_event_time"
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
@@ -160,9 +162,9 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
           </div>
 
           <div className="col-span-2 space-y-2">
-            <Label htmlFor="duration">Duration (minutes)</Label>
+            <Label htmlFor="edit_event_duration">Duration (minutes)</Label>
             <Input
-              id="duration"
+              id="edit_event_duration"
               type="number"
               min={15}
               step={15}
@@ -172,12 +174,11 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
           </div>
 
           <div className="col-span-2 space-y-2">
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label htmlFor="edit_event_notes">Notes (optional)</Label>
             <Textarea
-              id="notes"
+              id="edit_event_notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="e.g. Window seat if possible"
             />
           </div>
         </div>
@@ -186,26 +187,34 @@ export function CreateBookingDialog({ outletId }: { outletId: string }) {
           outletId={outletId}
           datetime={datetime}
           durationMinutes={Number(durationMinutes) || 120}
-          selectionMode="single"
+          excludeBookingId={booking.id}
+          selectionMode="multiple"
           selected={selectedTableIds}
           onSelectedChange={setSelectedTableIds}
         />
 
-        {createBooking.isError && (
+        {selectedTableIds.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {selectedTableIds.length} table
+            {selectedTableIds.length > 1 ? "s" : ""} selected
+          </p>
+        )}
+
+        {updateEventBooking.isError && (
           <p className="text-sm text-destructive">
-            {createBooking.error.message}
+            {updateEventBooking.error.message}
           </p>
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!isValid || createBooking.isPending}
+            disabled={!isValid || updateEventBooking.isPending}
           >
-            {createBooking.isPending ? "Creating..." : "Create Booking"}
+            {updateEventBooking.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

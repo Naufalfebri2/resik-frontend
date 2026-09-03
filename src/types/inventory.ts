@@ -1,3 +1,5 @@
+import type { User } from "@/types/auth";
+
 export interface Outlet {
   id: string;
   tenant_id: string;
@@ -155,6 +157,27 @@ export interface CashTransaction {
   type: CashTransactionType;
   source: CashTransactionSource;
   amount: number;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type CashReconciliationStatus =
+  | "completed"
+  | "pending_approval"
+  | "rejected";
+
+export interface CashReconciliation {
+  id: string;
+  cash_account_id: string;
+  date: string;
+  system_balance: string;
+  physical_balance: string;
+  difference: string;
+  status: CashReconciliationStatus;
+  reconciled_by: User;
+  approved_by: User | null;
+  adjustment_transaction_id: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;

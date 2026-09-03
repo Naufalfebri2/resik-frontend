@@ -136,3 +136,26 @@ export interface CashAccount {
   created_at: string;
   updated_at: string;
 }
+
+export type CashTransactionType = "in" | "out";
+
+export type CashTransactionSource =
+  | "pos"
+  | "purchase_order"
+  | "payroll"
+  | "manual"
+  | "refund"
+  | "adjustment";
+
+export interface CashTransaction {
+  id: string;
+  cash_account_id: string;
+  purchase_order_id: string | null;
+  date: string;
+  type: CashTransactionType;
+  source: CashTransactionSource;
+  amount: number;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
